@@ -7,7 +7,7 @@ public class berthaTele_v1 extends LinearOpMode {
 
         public boolean claw = true;
         public boolean blocker = false;
-        public boolean
+        public boolean intakeFlip = true;
 
     berthaHardware Bertha = new berthaHardware(this);
     @Override

@@ -74,6 +74,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+
     @Override
     public void runOpMode() {
 
@@ -134,6 +135,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 leftBackPower   /= max;
                 rightBackPower  /= max;
             }
+
 
             // This is test code:
             //

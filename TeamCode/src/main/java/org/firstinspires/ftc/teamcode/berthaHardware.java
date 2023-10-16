@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PwmControl;
@@ -20,17 +21,20 @@ public class berthaHardware {
     public static double liftS = 0.5;
     public static int liftPT = 20;
 
+    public static int home = 0;
     public static int level1 = 300;
     public static int level2 = 600;
     public static int level3 = 900;
 
-    public enum liftPosition{
-        home,
-        low,
-        medium,
-        high
-    }
-    liftPosition currentHeight = liftPosition.home;
+    //claw items
+    public static double closed = 0.2;
+    public static double open = 0.5;
+    public boolean clawClosed = false;
+    public static double yesBlock = 0.3;
+    public static double noBlock = 0.1;
+    public static double flipIn = 0;
+    public static double flipOut = 0.5;
+
 
     //motors
     private DcMotorEx frontRight    = null;
@@ -44,13 +48,13 @@ public class berthaHardware {
 
     //servos
     private ServoImplEx claw        = null;
-    private ServoImplEx clawFlipA   = null;
-    private ServoImplEx clawFlipB   = null;
+    private CRServoImplEx clawFlipA   = null;
+    private CRServoImplEx clawFlipB   = null;
     private ServoImplEx launchRelease = null;
     private ServoImplEx climbReleaseA = null;
     private ServoImplEx climbReleaseB = null;
     private ServoImplEx intakeLink = null;
-    private ServoImplEx clawBlock = null;
+    private ServoImplEx pixelBlock = null;
     private CRServoImplEx intakeSA  = null;
     private CRServoImplEx intakeSB  = null;
 
@@ -71,17 +75,25 @@ public class berthaHardware {
 
         liftMaster = myOpMode.hardwareMap.get(DcMotorEx.class, "liftMaster");
         liftSlave = myOpMode.hardwareMap.get(DcMotorEx.class, "liftSlave");
+        liftMaster.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftSlave.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMaster.setPositionPIDFCoefficients(liftP);
+        liftSlave.setPositionPIDFCoefficients(liftP);
+        liftMaster.setTargetPositionTolerance(liftPT);
+        liftSlave.setTargetPositionTolerance(liftPT);
+
 
         intakeMA = myOpMode.hardwareMap.get(DcMotorEx.class, "intakeMA");
         intakeMB = myOpMode.hardwareMap.get(DcMotorEx.class, "intakeMB");
         intakeMB.setDirection(DcMotorSimple.Direction.REVERSE);
 
         claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
-        clawFlipA = myOpMode.hardwareMap.get(ServoImplEx.class, "clawFlipA");
-        clawFlipB = myOpMode.hardwareMap.get(ServoImplEx.class, "clawFlipB");
+        clawFlipA = myOpMode.hardwareMap.get(CRServoImplEx.class, "clawFlipA");
+        clawFlipB = myOpMode.hardwareMap.get(CRServoImplEx.class, "clawFlipB");
         climbReleaseA = myOpMode.hardwareMap.get(ServoImplEx.class, "climbReleaseA");
         climbReleaseB = myOpMode.hardwareMap.get(ServoImplEx.class, "climbReleaseB");
         launchRelease = myOpMode.hardwareMap.get(ServoImplEx.class, "launchRelease");
+        pixelBlock = myOpMode.hardwareMap.get(ServoImplEx.class, "pixelBlock");
 
         intakeSA = myOpMode.hardwareMap.get(CRServoImplEx.class, "intakeSA");
         intakeSB = myOpMode.hardwareMap.get(CRServoImplEx.class, "intakeSB");
@@ -93,7 +105,9 @@ public class berthaHardware {
         intakeSA.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSB.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-
+        launchRelease.setPosition(0);
+        climbReleaseA.setPosition(0);
+        climbReleaseB.setPosition(1);
     }
     public void driveRobotOriented(double X, double Y, double R){
         frontRight.setPower(Y-X-R);
@@ -117,6 +131,7 @@ public class berthaHardware {
         }
     }
 
+    //intake stuff
     public void intake(double speed){
         intakeMA.setPower(speed);
         intakeMB.setPower(speed);
@@ -124,11 +139,60 @@ public class berthaHardware {
         intakeSB.setPower(speed);
     }
 
-    public int liftTargetPosition(){
-        return liftMaster.getTargetPosition();
+    //lift stuff
+    public void lift(int position){
+        liftMaster.setTargetPosition(position);
+        liftSlave.setTargetPosition(-position);
+        liftMaster.setPower(liftS);
+        liftSlave.setPower(liftS);
     }
-    public int liftCurrentPosition(){
-        return liftMaster.getCurrentPosition();
-    }
+    public int liftTargetPosition(){ return liftMaster.getTargetPosition();}
+    public int liftCurrentPosition(){return liftMaster.getCurrentPosition();}
     public boolean liftBusy(){return liftMaster.isBusy();}
+
+    //claw stuff
+    public void closeClaw(boolean toggle){
+        if(toggle){
+            claw.setPosition(closed);
+            clawClosed = true;
+        }
+        else{
+            claw.setPosition(open);
+            clawClosed = false;
+        }
+    }
+    public boolean isClawClosed(){ return clawClosed; }
+
+    public void pixelBlocker(){
+        if(clawClosed){
+            pixelBlock.setPosition(noBlock);
+        }
+        else if(liftCurrentPosition()>50){
+            pixelBlock.setPosition(noBlock);
+        }
+        else if(liftCurrentPosition()<50){
+            pixelBlock.setPosition(yesBlock);
+        }
+    }
+
+    public void clawFlip(){
+        if(liftCurrentPosition()>200){
+            clawFlipA.setPower(flipOut);
+            clawFlipB.setPower(1-flipOut);
+        }
+        else{
+            clawFlipA.setPower(flipIn);
+            clawFlipB.setPower(1-flipIn);
+        }
+    }
+
+    //endgame
+    public void launch(){
+        launchRelease.setPosition(0.5);
+    }
+
+    public void climb(){
+        climbReleaseA.setPosition(0.25);
+        climbReleaseB.setPosition(0.75);
+    }
 }

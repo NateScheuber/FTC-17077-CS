@@ -9,7 +9,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class Location_Pipeline extends OpenCvPipeline {
+public class Location_Pipeline_Blue extends OpenCvPipeline {
 
     Telemetry telemetry;
 
@@ -48,8 +48,8 @@ public class Location_Pipeline extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, HSV, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(0,50, 100);
-        Scalar highHSV = new Scalar(20,100,255);
+        Scalar lowHSV = new Scalar(200,50, 50);
+        Scalar highHSV = new Scalar(255,100,100);
 
         Core.inRange(HSV, lowHSV, highHSV, HSV);
         Mat left = HSV.submat(LEFT_ROI);

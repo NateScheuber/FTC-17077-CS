@@ -67,6 +67,8 @@ public class berthaHardware {
     private ServoImplEx pixelBlock = null;
     private CRServoImplEx intakeSA  = null;
     private CRServoImplEx intakeSB  = null;
+    private ServoImplEx pixelReleaseA = null;
+    private ServoImplEx pixelReleaseB = null;
 
     public berthaHardware(LinearOpMode opmode){myOpMode = opmode;}
 
@@ -101,6 +103,8 @@ public class berthaHardware {
         climbReleaseB = myOpMode.hardwareMap.get(ServoImplEx.class, "climbReleaseB");
         launchRelease = myOpMode.hardwareMap.get(ServoImplEx.class, "launchRelease");
         pixelBlock = myOpMode.hardwareMap.get(ServoImplEx.class, "pixelBlock");
+        pixelReleaseA =myOpMode.hardwareMap.get(ServoImplEx.class, "pixelReleaseA");
+        pixelReleaseB =myOpMode.hardwareMap.get(ServoImplEx.class, "pixelReleaseB");
 
         intakeSA = myOpMode.hardwareMap.get(CRServoImplEx.class, "intakeSA");
         intakeSB = myOpMode.hardwareMap.get(CRServoImplEx.class, "intakeSB");
@@ -111,10 +115,13 @@ public class berthaHardware {
         clawFlipB.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSA.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSB.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        pixelReleaseB.setDirection(Servo.Direction.REVERSE);
 
         launchRelease.setPosition(0);
         climbReleaseA.setPosition(0);
         climbReleaseB.setPosition(1);
+        pixelReleaseA.setPosition(0);
+        pixelReleaseB.setPosition(0);
         intakeLink.setPosition(intakeUp);
     }
     public void driveRobotOriented(double X, double Y, double R){
@@ -123,19 +130,19 @@ public class berthaHardware {
         frontLeft.setPower(Y+X+R);
         backLeft.setPower(Y-X+R);
     }
-    public void driveSlowMo(boolean forward, boolean backward, boolean right, boolean left){
+    public void driveSlowMo(boolean forward, boolean backward, boolean right, boolean left, double rotation){
         if(forward){
-            driveRobotOriented(0, 0.25, 0);
+            driveRobotOriented(0, 0.25, rotation);
         }
         else if(backward){
-            driveRobotOriented(0,-0.25,0);
+            driveRobotOriented(0,-0.25,rotation);
         }
 
         if(right){
-            driveRobotOriented(0.25, 0, 0);
+            driveRobotOriented(0.25, 0, rotation);
         }
         else if(left){
-            driveRobotOriented(-0.25, 0, 0);
+            driveRobotOriented(-0.25, 0, rotation);
         }
     }
 

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.auto.VIsion.Location_Pipeline;
+import org.firstinspires.ftc.teamcode.auto.VIsion.Location_Pipeline_Red;
 import org.firstinspires.ftc.teamcode.berthaHardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -15,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous(name = "Red")
-public class Meet1RedAudience extends LinearOpMode {
+public class Meet2RedAudience extends LinearOpMode {
     berthaHardware Bertha = new berthaHardware(this);
 
     OpenCvCamera webcam;
@@ -26,7 +26,7 @@ public class Meet1RedAudience extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        Location_Pipeline detector = new Location_Pipeline();
+        Location_Pipeline_Red detector = new Location_Pipeline_Red();
         webcam.setPipeline(detector);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                                          @Override
@@ -48,29 +48,52 @@ public class Meet1RedAudience extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startpose = new Pose2d(36, -63, Math.toRadians(-90));
+        Pose2d startpose = new Pose2d(12, -63, Math.toRadians(-90));
         drive.setPoseEstimate(startpose);
         telemetry.addData("Status", "Pose Set");
         telemetry.update();
 
-        Trajectory preload = drive.trajectoryBuilder(startpose)
-            .splineToConstantHeading(new Vector2d(40, 36), Math.toRadians(180))
-            .build();
+        //Position 1
+        Trajectory preload1 = drive.trajectoryBuilder(startpose)
+                .splineToSplineHeading(new Pose2d(52, -30, Math.toRadians(180)), Math.toRadians(10))
+                .build();
 
-        Trajectory autocyclePU = drive.trajectoryBuilder(preload.end())
-            .splineToConstantHeading(new Vector2d(6, -12), Math.toRadians(180))
-            .splineToConstantHeading(new Vector2d(-60, -12), Math.toRadians(180))
-            .build();
+        Trajectory placeYellow1 = drive.trajectoryBuilder(preload1.end())
+                .splineToSplineHeading(new Pose2d(12, -28, Math.toRadians(0)),Math.toRadians(180))
+                .build();
 
-        Trajectory autocycleDEP = drive.trajectoryBuilder(autocyclePU.end())
-            .splineToConstantHeading(new Vector2d(6, -12), Math.toRadians(0))
-            .splineToConstantHeading(new Vector2d(40, -36), Math.toRadians(0))
-            .build();
+        Trajectory park1 = drive.trajectoryBuilder(placeYellow1.end())
+                .splineToSplineHeading(new Pose2d(52, -62,Math.toRadians(0)), Math.toRadians(0))
+                .build();
 
-        Trajectory park = drive.trajectoryBuilder(autocycleDEP.end())
-            .splineToConstantHeading(new Vector2d(6, -12), Math.toRadians(0))
-            .splineToConstantHeading(new Vector2d(40, -12), Math.toRadians(0))
-            .build();
+
+        //Position 2
+        Trajectory preload2 = drive.trajectoryBuilder(startpose)
+                .splineToSplineHeading(new Pose2d(52, -36, Math.toRadians(180)), Math.toRadians(10))
+                .build();
+
+        Trajectory placeYellow2 = drive.trajectoryBuilder(preload2.end())
+                .splineToSplineHeading(new Pose2d(12, -34, Math.toRadians(-90)),Math.toRadians(200))
+                .build();
+
+        Trajectory park2 = drive.trajectoryBuilder(placeYellow2.end())
+                .splineToSplineHeading(new Pose2d(52, -62, Math.toRadians(0)), Math.toRadians(0))
+                .build();
+
+
+        //Position 3
+        Trajectory preload3 = drive.trajectoryBuilder(startpose)
+                .splineToSplineHeading(new Pose2d(52, -42, Math.toRadians(180)), Math.toRadians(10))
+                .build();
+
+        Trajectory placeYellow3 = drive.trajectoryBuilder(preload3.end())
+                .splineToSplineHeading(new Pose2d(28, -36, Math.toRadians(-90)),Math.toRadians(-150))
+                .build();
+
+        Trajectory park3 = drive.trajectoryBuilder(placeYellow3.end())
+                .splineToSplineHeading(new Pose2d(52, -62,Math.toRadians(0)), Math.toRadians(0))
+                .build();
+
 
         waitForStart();
 

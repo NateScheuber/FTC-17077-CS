@@ -37,8 +37,16 @@ public class berthaTele_v1 extends LinearOpMode {
             double driveX = gamepad1.right_stick_x;
             double driveY = -gamepad1.right_stick_y;
             double driveR = gamepad1.left_stick_x + (gamepad1.right_trigger * 0.25) - (gamepad1.left_trigger * 0.25);
-            Bertha.driveRobotOriented(driveX,driveY,driveR);
-            Bertha.driveSlowMo(gamepad1.dpad_up, gamepad1.dpad_down, gamepad1.dpad_right, gamepad1.dpad_left);
+            Bertha.driveRobotOriented(
+                    driveX,
+                    driveY,
+                    driveR);
+            Bertha.driveSlowMo(
+                    gamepad1.dpad_up,
+                    gamepad1.dpad_down,
+                    gamepad1.dpad_right,
+                    gamepad1.dpad_left,
+                    (gamepad1.right_trigger * 0.25) - (gamepad1.left_trigger * 0.25));
 
             //intake
             if(gamepad1.right_bumper){

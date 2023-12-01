@@ -4,10 +4,17 @@ import static org.firstinspires.ftc.teamcode.berthaHardware.home;
 import static org.firstinspires.ftc.teamcode.berthaHardware.level1;
 import static org.firstinspires.ftc.teamcode.berthaHardware.level2;
 import static org.firstinspires.ftc.teamcode.berthaHardware.level3;
+import static org.firstinspires.ftc.teamcode.berthaHardware.liftP;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.berthaHardware;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.berthaHardware;
+@Config
+@TeleOp(name = "berthaTele")
 public class berthaTele_v1 extends LinearOpMode {
 
         public boolean claw = true;
@@ -16,12 +23,13 @@ public class berthaTele_v1 extends LinearOpMode {
         public boolean clawClosed = false;
         public boolean clawClosedToggle = false;
 
+        public static int liftPosition = 0;
+        public ElapsedTime liftDelay = new ElapsedTime();
 
     berthaHardware Bertha = new berthaHardware(this);
     @Override
     public void runOpMode() throws InterruptedException {
         Bertha.init();
-
 
         waitForStart();
         while(opModeIsActive()){
@@ -34,10 +42,12 @@ public class berthaTele_v1 extends LinearOpMode {
 
             //intake
             if(gamepad1.right_bumper){
-                Bertha.intake(1);
+                Bertha.intake(0.8);
+                Bertha.intakeFlip(true);
             }
             else  if(gamepad1.left_bumper){
-                Bertha.intake(-1);
+                Bertha.intake(-0.8);
+                Bertha.intakeFlip(false);
             }
             else{
                 Bertha.intake(0);
@@ -45,21 +55,23 @@ public class berthaTele_v1 extends LinearOpMode {
 
             //lift
             if(gamepad2.dpad_down){
-                Bertha.lift(home);
+                liftPosition = home;
+                liftDelay.reset();
             }
             else if(gamepad2.dpad_left){
-                Bertha.lift(level1);
+                liftPosition = level1;
             }
             else if(gamepad2.dpad_right){
-                Bertha.lift(level2);
+                liftPosition = level2;
             }
             else if(gamepad2.dpad_up){
-                Bertha.lift(level3);
+                liftPosition = level3;
             }
 
+            Bertha.lift(liftPosition, liftDelay.milliseconds());
 
             //claw open/close
-            if(gamepad2.x && clawClosedToggle){
+            if(gamepad2.cross && clawClosedToggle){
                 clawClosedToggle = false;
                 if(clawClosed){
                     Bertha.closeClaw(false);
@@ -70,7 +82,7 @@ public class berthaTele_v1 extends LinearOpMode {
                     clawClosed = true;
                 }
             }
-            else if(!gamepad2.x){
+            else if(!gamepad2.cross){
                 clawClosedToggle = true;
             }
 
@@ -89,6 +101,11 @@ public class berthaTele_v1 extends LinearOpMode {
             }
 
 
+
+            telemetry.addData("Lift Target Position", liftPosition);
+            telemetry.addData("Lift Power", Bertha.liftPower());
+            telemetry.addData("Lift Current Position", Bertha.liftCurrentPosition());
+            telemetry.update();
         }
     }
 }

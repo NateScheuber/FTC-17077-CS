@@ -94,8 +94,7 @@ public class berthaTele_v1 extends LinearOpMode {
                 clawClosedToggle = true;
             }
 
-            //pixel blocker automation
-            Bertha.pixelBlocker();
+            Bertha.clawRotate(gamepad2.right_bumper, gamepad2.left_bumper);
 
             //claw flip automation
             Bertha.clawFlip();

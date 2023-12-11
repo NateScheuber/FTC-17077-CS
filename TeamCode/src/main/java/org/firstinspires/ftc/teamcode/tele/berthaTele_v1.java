@@ -54,7 +54,7 @@ public class berthaTele_v1 extends LinearOpMode {
                 Bertha.intakeFlip(true);
             }
             else  if(gamepad1.left_bumper){
-                Bertha.intake(-0.8);
+                Bertha.intake(-0.5);
                 Bertha.intakeFlip(false);
             }
             else{
@@ -63,8 +63,8 @@ public class berthaTele_v1 extends LinearOpMode {
 
             //lift
             if(gamepad2.dpad_down){
-                liftPosition = home;
                 liftDelay.reset();
+                liftPosition = home;
             }
             else if(gamepad2.dpad_left){
                 liftPosition = level1;
@@ -104,8 +104,11 @@ public class berthaTele_v1 extends LinearOpMode {
                 Bertha.launch();
             }
 
-            if(gamepad2.b){
-                Bertha.climb();
+            if(gamepad2.right_bumper){
+                Bertha.climb(-8000);
+            }
+            else if(gamepad2.left_bumper){
+                Bertha.climb(-3500);
             }
 
 
@@ -113,6 +116,7 @@ public class berthaTele_v1 extends LinearOpMode {
             telemetry.addData("Lift Target Position", liftPosition);
             telemetry.addData("Lift Power", Bertha.liftPower());
             telemetry.addData("Lift Current Position", Bertha.liftCurrentPosition());
+            telemetry.addData("Climb Current Position", Bertha.climbPosition());
             telemetry.update();
         }
     }

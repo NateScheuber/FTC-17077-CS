@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,36 +15,17 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name = "Red")
+
+@Autonomous(name = "Red w/vision")
 public class Meet2RedAudience extends LinearOpMode {
     berthaHardware Bertha = new berthaHardware(this);
 
     OpenCvCamera webcam;
+    public int position = 1;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
-        Location_Pipeline_Red detector = new Location_Pipeline_Red();
-        webcam.setPipeline(detector);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                                         @Override
-                                         public void onOpened() {
-                                             webcam.startStreaming(320,240,OpenCvCameraRotation.UPRIGHT);
-                                         }
-
-                                         @Override
-                                         public void onError(int errorCode) {
-
-                                         }
-                                     });
-
-        telemetry.addLine("Waiting for start");
-        telemetry.update();
-
-
                 Bertha.init();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -95,23 +77,43 @@ public class Meet2RedAudience extends LinearOpMode {
                 .build();
 
 
-        waitForStart();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
+        Location_Pipeline_Red detector = new Location_Pipeline_Red(telemetry);
+        webcam.setPipeline(detector);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(320,240,OpenCvCameraRotation.UPRIGHT);
+            }
 
-        switch (detector.getLocation()){
-            case LEFT:
-                webcam.stopStreaming();
+            @Override
+            public void onError(int errorCode) {
 
-                break;
-            case MIDDLE:
-                webcam.stopStreaming();
+            }
+        });
 
-                break;
-            case RIGHT:
-                webcam.stopStreaming();
-
-                break;
+        telemetry.addLine("Waiting for start");
+        telemetry.update();
+        while(!isStarted()){
+            position = Location_Pipeline_Red.position();
         }
+
+        waitForStart();
+        if(position == 1){
+            telemetry.addData("Trajectory", "1");
+            telemetry.update();
+        }
+        else if(position == 2){
+            telemetry.addData("Trajectory", "2");
+            telemetry.update();
+        }
+        else{
+            telemetry.addData("Trajectory", "3");
+            telemetry.update();
+        }
+
 
 
 

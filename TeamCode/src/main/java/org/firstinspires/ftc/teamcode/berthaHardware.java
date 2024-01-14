@@ -1,19 +1,37 @@
 package org.firstinspires.ftc.teamcode;
 
+
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.ams.AMSColorSensor;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.util.Range;
+
+import org.apache.commons.math3.util.IterationListener;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 @Config
 public class berthaHardware {
+
     private LinearOpMode myOpMode = null;
 
     //lift items
@@ -24,25 +42,27 @@ public class berthaHardware {
     public static int liftPosition = 0;
 
     public static int home = -5;
-    public static int level1 = 700;
+    public static int level1 = 600;
     public static int level2 = 950;
-    public static int level3 = 1450;
+    public static int level3 = 1300;
 
     //claw items
-    public static double closed = 0.295;
-    public static double open = 0.44;
+    public static double closed = 0.44;
+    public static double open = 0.65;
     public boolean clawClosed = false;
-    public static double flipIn = 0.105;
-    public static double flipOut = 0.32;
-    public static double rotatePostion = 0;
-    public static double rotate0 = 0;
-    public static double rotate30 = 0.2;
-    public static double rotate90 = 0.4;
-    public boolean rotateTrigger = false;
+    public static double flipIn = 0.48;
+    public static double flipOut = 0.27;
+    public int rotatePostion = 0;
+    public static double rotate0 = -0.025;
+    public static double rotateCW30 = 0.2;
+    public static double rotateCCW30 = -0.2;
+    public static double rotateCW90 = 0.495;
+    public static double rotateCCW90 = -0.52;
+
 
     //intake items
-    public static double intakeDown = 0.98;
-    public static double intakeUp = 0.65;
+    public static double intakeDown = 0.34;
+    public static double intakeUp = 0.6;
 
     //motors
     private DcMotorEx frontRight    = null;
@@ -54,16 +74,22 @@ public class berthaHardware {
     private DcMotorEx intakeMA      = null;
     private DcMotorEx climb         = null;
 
+
     //servos
     private ServoImplEx claw        = null;
     private ServoImplEx clawFlip   = null;
     private CRServoImplEx clawRotate   = null;
     private ServoImplEx launchRelease = null;
-    private ServoImplEx intakeLink = null;
+    private ServoImplEx intakeLinkA = null;
+    private ServoImplEx intakeLinkB = null;
     private ServoImplEx pixelBlock = null;
     private CRServoImplEx intakeSA  = null;
     private CRServoImplEx intakeSB  = null;
     private ServoImplEx pixelRelease = null;
+
+    //sensors
+    private Encoder liftEncoder     = null;
+    private Rev2mDistanceSensor rearDistance = null;
 
     public berthaHardware(LinearOpMode opmode){myOpMode = opmode;}
 
@@ -82,13 +108,17 @@ public class berthaHardware {
 
         liftMaster = myOpMode.hardwareMap.get(DcMotorEx.class, "liftMaster");
         liftSlave = myOpMode.hardwareMap.get(DcMotorEx.class, "liftSlave");
-        liftSlave.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftMaster.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftSlave.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftEncoder = new Encoder(myOpMode.hardwareMap.get(DcMotorEx.class, "liftMaster"));
+        liftMaster.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        liftSlave.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         intakeMA = myOpMode.hardwareMap.get(DcMotorEx.class, "intakeMA");
         climb = myOpMode.hardwareMap.get(DcMotorEx.class, "climb");
-        intakeLink = myOpMode.hardwareMap.get(ServoImplEx.class, "intakeLink");
+        intakeLinkA = myOpMode.hardwareMap.get(ServoImplEx.class, "intakeLinkA");
+        intakeLinkB = myOpMode.hardwareMap.get(ServoImplEx.class, "intakeLinkB");
+        intakeLinkB.setDirection(Servo.Direction.REVERSE);
+        intakeMA.setDirection(DcMotorSimple.Direction.REVERSE);
+        climb.setDirection(DcMotorSimple.Direction.REVERSE);
 
         claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
         clawFlip = myOpMode.hardwareMap.get(ServoImplEx.class, "clawFlip");
@@ -112,14 +142,13 @@ public class berthaHardware {
         climb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         climb.setTargetPosition(0);
         climb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMaster.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMaster.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftSlave.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         climb.setPower(1);
         launchRelease.setPosition(0);
         pixelRelease.setPosition(0);
         clawFlip.setPosition(flipIn);
-        intakeLink.setPosition(intakeUp);
+        clawRotate.setPower(rotate0);
+        intakeLinkA.setPosition(intakeUp);
+        intakeLinkB.setPosition(intakeUp);
     }
     public void driveRobotOriented(double X, double Y, double R){
         frontRight.setPower(Y-X-R);
@@ -129,17 +158,17 @@ public class berthaHardware {
     }
     public void driveSlowMo(boolean forward, boolean backward, boolean right, boolean left, double rotation){
         if(forward){
-            driveRobotOriented(0, 0.25, rotation);
+            driveRobotOriented(0, 0.4, rotation);
         }
         else if(backward){
-            driveRobotOriented(0,-0.25,rotation);
+            driveRobotOriented(0,-0.4,rotation);
         }
 
         if(right){
-            driveRobotOriented(0.25, 0, rotation);
+            driveRobotOriented(0.4, 0, rotation-0.02);
         }
         else if(left){
-            driveRobotOriented(-0.25, 0, rotation);
+            driveRobotOriented(-0.4, 0, rotation+0.02);
         }
     }
 
@@ -151,10 +180,12 @@ public class berthaHardware {
     }
     public void intakeFlip(boolean down){
         if(down){
-            intakeLink.setPosition(intakeDown);
+            intakeLinkA.setPosition(intakeDown);
+            intakeLinkB.setPosition(intakeDown);
         }
         else{
-            intakeLink.setPosition(intakeUp);
+            intakeLinkA.setPosition(intakeUp);
+            intakeLinkB.setPosition(intakeUp);
         }
     }
 
@@ -166,15 +197,21 @@ public class berthaHardware {
                 liftSlave.setPower(0);
             }
             else{
-                liftPower = liftP * (position-liftMaster.getCurrentPosition());
+                liftPower = liftP * (Range.clip((position-liftMaster.getCurrentPosition()),-1,1));
                 liftMaster.setPower(liftPower);
-                liftSlave.setPower(-liftPower);
+                liftSlave.setPower(liftPower);
             }
 
     }
+
+    public void liftRawPower(double liftPower){
+        liftMaster.setPower(liftPower);
+        liftSlave.setPower(liftPower);
+    }
+
     public double liftPower(){return liftPower;}
     public int liftTargetPosition(){ return liftMaster.getTargetPosition();}
-    public int liftCurrentPosition(){return liftMaster.getCurrentPosition();}
+    public int liftCurrentPosition(){return liftEncoder.getCurrentPosition();}
     public boolean liftBusy(){return liftMaster.isBusy();}
 
     //claw stuff
@@ -200,45 +237,23 @@ public class berthaHardware {
     }
 
     public void clawRotate(boolean up, boolean down){
-        if(liftTargetPosition()==0){
-            clawRotate.setPower(rotatePostion);
-        }
-        else{
-            if(rotateTrigger && (up || down)){
-                rotateTrigger = false;
-                if(up){
-                    rotatePostion += 1;
-                }
-                else{
-                    rotatePostion -= 1;
-                }
-            }
-            else{
-                rotateTrigger = true;
-            }
-        }
-
-        if(rotatePostion > 2){
-            rotatePostion=2;
-        }
-        else if(rotatePostion < -2){
-            rotatePostion = -2;
-        }
-
-        if(rotatePostion == 0){
+        if(liftCurrentPosition()<400 || liftPosition == home){
             clawRotate.setPower(rotate0);
         }
-        else if(rotatePostion == 1){
-            clawRotate.setPower(rotate30);
-        }
-        else if(rotatePostion == 2){
-            clawRotate.setPower(rotate90);
-        }
-        else if(rotatePostion == -1){
-            clawRotate.setPower(-rotate30);
-        }
-        else if(rotatePostion == -2){
-            clawRotate.setPower(-rotate90);
+        else{
+            if(up){
+                rotatePostion = 0;
+            }
+            else if(down){
+                rotatePostion = 1;
+            }
+
+            if(rotatePostion == 0){
+                clawRotate.setPower(rotateCW90);
+            }
+            else if(rotatePostion == 1){
+                clawRotate.setPower(rotateCCW90);
+            }
         }
     }
 
@@ -253,5 +268,10 @@ public class berthaHardware {
     }
     public int climbPosition(){
         return climb.getCurrentPosition();
+    }
+
+    //random/auton
+    public double rearDistance(){
+        return rearDistance.getDistance(DistanceUnit.CM);
     }
 }

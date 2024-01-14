@@ -16,11 +16,11 @@ public class Location_Pipeline_Red extends OpenCvPipeline {
     Telemetry telemetry;
     public Location_Pipeline_Red(Telemetry t){telemetry = t;}
 
-    static final Point topLeft1 = new Point (60,140);
-    static final Point bottomRight1 = new Point (80, 160);
+    static final Point topLeft1 = new Point (95,50);
+    static final Point bottomRight1 = new Point (125, 80);
 
-    static final Point topLeft2 = new Point(270, 130);
-    static final Point bottomRight2 = new Point(290, 150);
+    static final Point topLeft2 = new Point(235, 115);
+    static final Point bottomRight2 = new Point(265, 140);
     Mat mat = new Mat();
     Mat region1 = new Mat();
     Mat region2 = new Mat();
@@ -49,18 +49,20 @@ public class Location_Pipeline_Red extends OpenCvPipeline {
         region2 = mat.submat(new Rect(topLeft2, bottomRight2));
 
 
-        if(Core.mean(region1).val[0]>100){
+        if(Core.mean(region1).val[0]>200){
             Imgproc.rectangle(mat, topLeft1, bottomRight1, GREEN, 1);
             Imgproc.rectangle(mat, topLeft2, bottomRight2, RED,1);
             //Imgproc.cvtColor(input, mat, Imgproc.COLOR_GRAY2RGB);
             telemetry.addData("Position", "1");
+            telemetry.update();
             position = 1;
         }
-        else if(Core.mean(region2).val[0]>100){
+        else if(Core.mean(region2).val[0]>200){
             Imgproc.rectangle(mat, topLeft1, bottomRight1, RED, 1);
             Imgproc.rectangle(mat, topLeft2, bottomRight2, GREEN,1);
             //Imgproc.cvtColor(input, mat, Imgproc.COLOR_GRAY2RGB);
             telemetry.addData("Position", "2");
+            telemetry.update();
             position = 2;
         }
         else {
@@ -68,7 +70,8 @@ public class Location_Pipeline_Red extends OpenCvPipeline {
             Imgproc.rectangle(mat, topLeft2, bottomRight2, RED, 1);
             //Imgproc.cvtColor(input, mat, Imgproc.COLOR_GRAY2RGB);
             telemetry.addData("Position", "3");
-            position =3;
+            telemetry.update();
+            position = 3;
 
         }
         telemetry.update();

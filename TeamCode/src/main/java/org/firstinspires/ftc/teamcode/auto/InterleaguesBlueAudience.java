@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.auto.VIsion.Location_Pipeline_Red;
+import org.firstinspires.ftc.teamcode.auto.VIsion.Location_Pipeline_Blue;
 import org.firstinspires.ftc.teamcode.berthaHardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -30,14 +30,12 @@ import static org.firstinspires.ftc.teamcode.berthaHardware.rotateCCW90;
 import static org.firstinspires.ftc.teamcode.berthaHardware.rotateCW90;
 
 @Config
-@Autonomous(name = "Red w/vision")
-public class Meet2RedAudience extends LinearOpMode {
+@Autonomous(name = "Blue w/vision")
+public class InterleaguesBlueAudience extends LinearOpMode {
     berthaHardware Bertha = new berthaHardware(this);
 
     OpenCvCamera webcam;
     public int position = 1;
-    public static double scoreX = 50;
-    public static double scoreY = -30;
 
 
     @Override
@@ -67,17 +65,15 @@ public class Meet2RedAudience extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(-39.7, -63, Math.toRadians(-90));
-        Pose2d scorePose = new Pose2d(scoreX, scoreY, Math.toRadians(180));
-
-
-        drive.setPoseEstimate(startPose);
+        Pose2d startpose = new Pose2d(-39.7, 63, Math.toRadians(90));
+        drive.setPoseEstimate(startpose);
         telemetry.addData("Status", "Pose Set");
         telemetry.update();
 
         //Position 1
-        Trajectory placePurple1 = drive.trajectoryBuilder(startPose, true)
-                .splineToConstantHeading(new Vector2d(-47, -32), Math.toRadians(90))
+        Trajectory placePurple1 = drive.trajectoryBuilder(startpose, true)
+                .splineToConstantHeading(new Vector2d(-39.7, 50), Math.toRadians(-90))
+                .splineToSplineHeading(new Pose2d(-32, 32, Math.toRadians(135)), Math.toRadians(-45))
                 .build();
 
         Trajectory intialIntake1 = drive.trajectoryBuilder(placePurple1.end())
@@ -86,8 +82,8 @@ public class Meet2RedAudience extends LinearOpMode {
                     intakeLinkB.setPosition(0.47);
                     intakeMA.setPower(1);
                 })
-                .splineToSplineHeading(new Pose2d(-52, -44, Math.toRadians(180)),Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-59.5, -40), Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(-47, 37, Math.toRadians(-180)),Math.toRadians(-180))
+                .splineToConstantHeading(new Vector2d(-63, 38), Math.toRadians(-180))
                 .addDisplacementMarker(()->{
                     intakeLinkA.setPosition(0.65);
                     intakeLinkB.setPosition(0.65);
@@ -110,58 +106,9 @@ public class Meet2RedAudience extends LinearOpMode {
                     clawFlip.setPosition(flipOut);
                     clawRotate.setPower(rotateCCW90);
                 })
-                .splineToConstantHeading(new Vector2d(-24, -37), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-5, -37), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(40, -33.5), Math.toRadians(0))
-                .addDisplacementMarker(() ->{
-                    Bertha.closeClaw(false);
-                })
-                .build();
-
-        Trajectory cycleIntake1 = drive.trajectoryBuilder(initialScore1.end())
-                .addTemporalMarker(0.4,()->{
-                    clawFlip.setPosition(flipIn);
-                    clawRotate.setPower(rotate0);
-                })
-                .addTemporalMarker(0.6, () -> {
-                    liftMaster.setPower(-0.5);
-                    liftSlave.setPower(-0.5);
-                })
-                .addTemporalMarker(0.8, () -> {
-                    liftMaster.setPower(0);
-                    liftSlave.setPower(0);
-                })
-                .splineToConstantHeading(new Vector2d(-0, -38), Math.toRadians(180))
-                .addDisplacementMarker(() ->{
-                    intakeLinkA.setPosition(0.41);
-                    intakeLinkB.setPosition(0.41);
-                    intakeMA.setPower(1);
-                })
-                .splineToConstantHeading(new Vector2d(-40, -39), Math.toRadians(180))
-
-                .splineToConstantHeading(new Vector2d(-64.5, -39), Math.toRadians(0))
-
-                .build();
-
-        Trajectory cycleScore1 = drive.trajectoryBuilder(cycleIntake1.end(), true)
-                .addTemporalMarker(0.6,()->{
-                    intakeMA.setPower(-0.5);
-                    Bertha.closeClaw(true);
-                })
-                .addTemporalMarker(1.75, () -> {
-                    intakeMA.setPower(0);
-                    liftMaster.setPower(1);
-                    liftSlave.setPower(1);
-                })
-                .addTemporalMarker(2.0, () -> {
-                    liftMaster.setPower(0);
-                    liftSlave.setPower(0);
-                    intakeMA.setPower(0);
-                    clawFlip.setPosition(flipOut);
-                    clawRotate.setPower(rotateCCW90);
-                })
-                .splineToConstantHeading(new Vector2d(-0, -38), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(36, -40), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-24, 38), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-5, 38), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(34, 44), Math.toRadians(0))
                 .addDisplacementMarker(() ->{
                     Bertha.closeClaw(false);
                 })
@@ -180,16 +127,16 @@ public class Meet2RedAudience extends LinearOpMode {
                     liftMaster.setPower(0);
                     liftSlave.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(25, -33), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(38, -16), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(25, 33), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(38, 16), Math.toRadians(0))
                 .build();
         telemetry.addData("PATH 1", "Complete");
         telemetry.update();
 
 
         //Position 2
-        Trajectory placePurple2 = drive.trajectoryBuilder(startPose, true)
-                .splineToConstantHeading(new Vector2d(-38, -31), Math.toRadians(90))
+        Trajectory placePurple2 = drive.trajectoryBuilder(startpose, true)
+                .splineToConstantHeading(new Vector2d(-38, 31), Math.toRadians(-90))
                 .build();
 
         Trajectory initialIntake2 = drive.trajectoryBuilder(placePurple2.end())
@@ -198,8 +145,8 @@ public class Meet2RedAudience extends LinearOpMode {
                     intakeLinkB.setPosition(0.47);
                     intakeMA.setPower(1);
                 })
-                .splineToSplineHeading(new Pose2d(-47, -44, Math.toRadians(180)),Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-60.5, -40), Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(-47, 44, Math.toRadians(-180)),Math.toRadians(-180))
+                .splineToConstantHeading(new Vector2d(-61, 38), Math.toRadians(-180))
                 .addDisplacementMarker(()->{
                     intakeLinkA.setPosition(0.65);
                     intakeLinkB.setPosition(0.65);
@@ -222,15 +169,13 @@ public class Meet2RedAudience extends LinearOpMode {
                     clawFlip.setPosition(flipOut);
                     clawRotate.setPower(rotateCCW90);
                 })
-                .splineToConstantHeading(new Vector2d(-24, -37), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-5, -37), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(39, -38), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-24, 37), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-5, 37), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(35, 38), Math.toRadians(0))
                 .addDisplacementMarker(() ->{
                     Bertha.closeClaw(false);
                 })
                 .build();
-        telemetry.addData("PATH 2", "Complete");
-        telemetry.update();
 
         Trajectory park2 = drive.trajectoryBuilder(initialScore2.end())
                 .addTemporalMarker(0.3,()->{
@@ -245,16 +190,18 @@ public class Meet2RedAudience extends LinearOpMode {
                     liftMaster.setPower(0);
                     liftSlave.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(25, -33), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(38, -16), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(25, 33), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(35, 16), Math.toRadians(0))
                 .build();
+
+        telemetry.addData("PATH 2", "Complete");
+        telemetry.update();
 
 
 
         //Position 3
-        Trajectory placePurple3 = drive.trajectoryBuilder(startPose, true)
-                .splineToConstantHeading(new Vector2d(-39.7, -50), Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(-30, -31, Math.toRadians(-135)), Math.toRadians(45))
+        Trajectory placePurple3 = drive.trajectoryBuilder(startpose, true)
+                .splineToConstantHeading(new Vector2d(-47, 32), Math.toRadians(-90))
                 .build();
 
         Trajectory initialIntake3 = drive.trajectoryBuilder(placePurple3.end())
@@ -263,8 +210,8 @@ public class Meet2RedAudience extends LinearOpMode {
                     intakeLinkB.setPosition(0.47);
                     intakeMA.setPower(1);
                 })
-                .splineToSplineHeading(new Pose2d(-47, -37, Math.toRadians(180)),Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-60.5, -40), Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(-52, 44, Math.toRadians(-180)),Math.toRadians(-180))
+                .splineToConstantHeading(new Vector2d(-61, 38), Math.toRadians(-180))
                 .addDisplacementMarker(()->{
                     intakeLinkA.setPosition(0.65);
                     intakeLinkB.setPosition(0.65);
@@ -285,11 +232,11 @@ public class Meet2RedAudience extends LinearOpMode {
                     liftSlave.setPower(0);
                     intakeMA.setPower(0);
                     clawFlip.setPosition(flipOut);
-                    clawRotate.setPower(rotateCW90);
+                    clawRotate.setPower(rotateCCW90);
                 })
-                .splineToConstantHeading(new Vector2d(-24, -37), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-5, -37), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(39, -41), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-24, 37), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-5, 37), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(34, 33.5), Math.toRadians(0))
                 .addDisplacementMarker(() ->{
                     Bertha.closeClaw(false);
                 })
@@ -308,8 +255,8 @@ public class Meet2RedAudience extends LinearOpMode {
                     liftMaster.setPower(0);
                     liftSlave.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(25, -33), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(38, -16), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(25, 33), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(38, 16), Math.toRadians(0))
                 .build();
         telemetry.addData("PATH 3", "Complete");
         telemetry.update();
@@ -318,7 +265,7 @@ public class Meet2RedAudience extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        Location_Pipeline_Red detector = new Location_Pipeline_Red(telemetry);
+        Location_Pipeline_Blue detector = new Location_Pipeline_Blue(telemetry);
         webcam.setPipeline(detector);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -335,22 +282,21 @@ public class Meet2RedAudience extends LinearOpMode {
         telemetry.addLine("Waiting for start");
         telemetry.update();
         while(!isStarted()){
-            position = Location_Pipeline_Red.position();
+            position = Location_Pipeline_Blue.position();
         }
-        waitForStart();
         webcam.stopStreaming();
+        position = Location_Pipeline_Blue.position();
 
         if(position == 1){
-            telemetry.addData("Trajectory", "1");
+            telemetry.addData("Running", "1");
             telemetry.update();
             drive.followTrajectory(placePurple1);
             drive.followTrajectory(intialIntake1);
-            drive.followTrajectory(initialScore1);
-            drive.setPoseEstimate(scorePose);
-            drive.followTrajectory(park1);
+            //drive.followTrajectory(initialScore1);
+            //drive.followTrajectory(park1);
         }
         else if(position == 2){
-            telemetry.addData("Trajectory", "2");
+            telemetry.addData("Running", "2");
             telemetry.update();
             drive.followTrajectory(placePurple2);
             drive.followTrajectory(initialIntake2);
@@ -358,7 +304,7 @@ public class Meet2RedAudience extends LinearOpMode {
             //drive.followTrajectory(park2);
         }
         else{
-            telemetry.addData("Trajectory", "3");
+            telemetry.addData("Running", "3");
             telemetry.update();
             drive.followTrajectory(placePurple3);
             drive.followTrajectory(initialIntake3);

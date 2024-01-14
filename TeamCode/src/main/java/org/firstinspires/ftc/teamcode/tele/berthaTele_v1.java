@@ -4,14 +4,16 @@ import static org.firstinspires.ftc.teamcode.berthaHardware.home;
 import static org.firstinspires.ftc.teamcode.berthaHardware.level1;
 import static org.firstinspires.ftc.teamcode.berthaHardware.level2;
 import static org.firstinspires.ftc.teamcode.berthaHardware.level3;
-import static org.firstinspires.ftc.teamcode.berthaHardware.liftP;
+
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.berthaHardware;
 @Config
 @TeleOp(name = "berthaTele")
@@ -22,13 +24,19 @@ public class berthaTele_v1 extends LinearOpMode {
         public boolean intakeFlip = true;
         public boolean clawClosed = false;
         public boolean clawClosedToggle = false;
+        public boolean rotateTrigger = false;
+
+
 
         public static int liftPosition = 0;
         public ElapsedTime liftDelay = new ElapsedTime();
 
+
     berthaHardware Bertha = new berthaHardware(this);
     @Override
     public void runOpMode() throws InterruptedException {
+
+        Rev2mDistanceSensor distance = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
         Bertha.init();
 
         waitForStart();
@@ -54,7 +62,7 @@ public class berthaTele_v1 extends LinearOpMode {
                 Bertha.intakeFlip(true);
             }
             else  if(gamepad1.left_bumper){
-                Bertha.intake(-0.5);
+                Bertha.intake(-0.3);
                 Bertha.intakeFlip(false);
             }
             else{
@@ -76,7 +84,7 @@ public class berthaTele_v1 extends LinearOpMode {
                 liftPosition = level3;
             }
 
-            Bertha.lift(liftPosition, liftDelay.milliseconds());
+            Bertha.lift((int) (liftPosition+(150*gamepad2.right_trigger)-(150*gamepad2.left_trigger)), liftDelay.milliseconds());
 
             //claw open/close
             if(gamepad2.cross && clawClosedToggle){
@@ -94,8 +102,8 @@ public class berthaTele_v1 extends LinearOpMode {
                 clawClosedToggle = true;
             }
 
-            //pixel blocker automation
-            Bertha.pixelBlocker();
+            Bertha.clawRotate(gamepad2.right_bumper, gamepad2.left_bumper);
+
 
             //claw flip automation
             Bertha.clawFlip();
@@ -104,16 +112,14 @@ public class berthaTele_v1 extends LinearOpMode {
                 Bertha.launch();
             }
 
-            if(gamepad2.right_bumper){
+            if(gamepad1.y){
                 Bertha.climb(-8000);
             }
-            else if(gamepad2.left_bumper){
+            else if(gamepad1.x){
                 Bertha.climb(-3500);
             }
 
-
-
-            telemetry.addData("Lift Target Position", liftPosition);
+            
             telemetry.addData("Lift Power", Bertha.liftPower());
             telemetry.addData("Lift Current Position", Bertha.liftCurrentPosition());
             telemetry.addData("Climb Current Position", Bertha.climbPosition());

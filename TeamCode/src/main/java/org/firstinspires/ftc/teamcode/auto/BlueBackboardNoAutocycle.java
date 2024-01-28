@@ -69,10 +69,10 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(8.3, -63, Math.toRadians(-90));
+        Pose2d startPose = new Pose2d(8.3, 63, Math.toRadians(90));
 
         Trajectory placePurple1 = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(12,-36, Math.toRadians(0)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(12,36, Math.toRadians(0)), Math.toRadians(180))
                 .addDisplacementMarker(()->{
                     intakeSA.setPower(-1);
                     intakeSB.setPower(-1);
@@ -80,7 +80,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                 .build();
 
         Trajectory placePurple2 = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(24,-24,Math.toRadians(180)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(24,24,Math.toRadians(180)), Math.toRadians(-90))
                 .addDisplacementMarker(()->{
                     intakeSA.setPower(-1);
                     intakeSB.setPower(-1);
@@ -88,7 +88,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                 .build();
 
         Trajectory placePurple3 = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(36,-42,Math.toRadians(180)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(36,42,Math.toRadians(180)), Math.toRadians(-90))
                 .addDisplacementMarker(()->{
                     intakeSA.setPower(-1);
                     intakeSB.setPower(-1);
@@ -112,7 +112,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                     clawFlip.setPosition(flipOut);
                     clawRotate.setPower(rotateCCW90);
                 })
-                .lineToLinearHeading(new Pose2d(50,-30,Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50,30,Math.toRadians(180)))
                 .addDisplacementMarker(()->{
                     Bertha.closeClaw(false);
                 })
@@ -134,7 +134,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                     clawFlip.setPosition(flipOut);
                     clawRotate.setPower(rotateCCW90);
                 })
-                .lineToLinearHeading(new Pose2d(50,-30,Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50,30,Math.toRadians(180)))
                 .addDisplacementMarker(()->{
                     Bertha.closeClaw(false);
                 })
@@ -156,7 +156,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                     clawFlip.setPosition(flipOut);
                     clawRotate.setPower(rotateCCW90);
                 })
-                .lineToLinearHeading(new Pose2d(50,-30,Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50,30,Math.toRadians(180)))
                 .addDisplacementMarker(()->{
                     Bertha.closeClaw(false);
                 })
@@ -175,7 +175,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                     liftMaster.setPower(0);
                     liftSlave.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(50,-62), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(50,62), Math.toRadians(180))
                 .build();
 
         Trajectory park2 = drive.trajectoryBuilder(placeYellow2.end())
@@ -191,7 +191,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                     liftMaster.setPower(0);
                     liftSlave.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(50,-62), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(50,62), Math.toRadians(180))
                 .build();
 
         Trajectory park3 = drive.trajectoryBuilder(placeYellow3.end())
@@ -207,7 +207,7 @@ public class BlueBackboardNoAutocycle extends LinearOpMode {
                     liftMaster.setPower(0);
                     liftSlave.setPower(0);
                 })
-                .splineToConstantHeading(new Vector2d(50,-62), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(50,62), Math.toRadians(180))
                 .build();
 
         telemetry.addData("Path", "Built");

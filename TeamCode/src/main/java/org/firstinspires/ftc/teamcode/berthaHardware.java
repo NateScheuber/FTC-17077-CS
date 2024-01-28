@@ -88,7 +88,6 @@ public class berthaHardware {
     private ServoImplEx pixelRelease = null;
 
     //sensors
-    private Encoder liftEncoder     = null;
     private Rev2mDistanceSensor rearDistance = null;
 
     public berthaHardware(LinearOpMode opmode){myOpMode = opmode;}
@@ -108,7 +107,6 @@ public class berthaHardware {
 
         liftMaster = myOpMode.hardwareMap.get(DcMotorEx.class, "liftMaster");
         liftSlave = myOpMode.hardwareMap.get(DcMotorEx.class, "liftSlave");
-        liftEncoder = new Encoder(myOpMode.hardwareMap.get(DcMotorEx.class, "liftMaster"));
         liftMaster.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         liftSlave.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
@@ -119,6 +117,7 @@ public class berthaHardware {
         intakeLinkB.setDirection(Servo.Direction.REVERSE);
         intakeMA.setDirection(DcMotorSimple.Direction.REVERSE);
         climb.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
         clawFlip = myOpMode.hardwareMap.get(ServoImplEx.class, "clawFlip");
@@ -137,13 +136,15 @@ public class berthaHardware {
         clawRotate.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSA.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSB.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        launchRelease.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
 
+        liftMaster.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMaster.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         climb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         climb.setTargetPosition(0);
         climb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        climb.setPower(1);
-        launchRelease.setPosition(0);
+        launchRelease.setPosition(0.5);
         pixelRelease.setPosition(0);
         clawFlip.setPosition(flipIn);
         clawRotate.setPower(rotate0);
@@ -197,7 +198,7 @@ public class berthaHardware {
                 liftSlave.setPower(0);
             }
             else{
-                liftPower = liftP * (Range.clip((position-liftMaster.getCurrentPosition()),-1,1));
+                liftPower = liftP * (position-liftMaster.getCurrentPosition());
                 liftMaster.setPower(liftPower);
                 liftSlave.setPower(liftPower);
             }
@@ -211,7 +212,7 @@ public class berthaHardware {
 
     public double liftPower(){return liftPower;}
     public int liftTargetPosition(){ return liftMaster.getTargetPosition();}
-    public int liftCurrentPosition(){return liftEncoder.getCurrentPosition();}
+    public int liftCurrentPosition(){return liftMaster.getCurrentPosition();}
     public boolean liftBusy(){return liftMaster.isBusy();}
 
     //claw stuff
@@ -259,7 +260,7 @@ public class berthaHardware {
 
     //endgame
     public void launch(){
-        launchRelease.setPosition(0.5);
+        launchRelease.setPosition(0.7);
     }
 
     public void climb(int position){

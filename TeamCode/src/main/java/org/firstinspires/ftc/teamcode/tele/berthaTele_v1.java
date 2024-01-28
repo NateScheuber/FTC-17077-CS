@@ -62,7 +62,7 @@ public class berthaTele_v1 extends LinearOpMode {
                 Bertha.intakeFlip(true);
             }
             else  if(gamepad1.left_bumper){
-                Bertha.intake(-0.3);
+                Bertha.intake(-0.5);
                 Bertha.intakeFlip(false);
             }
             else{
@@ -102,21 +102,22 @@ public class berthaTele_v1 extends LinearOpMode {
                 clawClosedToggle = true;
             }
 
+
+
+
+            //claw automation
+            Bertha.clawFlip();
             Bertha.clawRotate(gamepad2.right_bumper, gamepad2.left_bumper);
 
-
-            //claw flip automation
-            Bertha.clawFlip();
-
-            if(gamepad1.a && gamepad2.a){
+            if(gamepad1.b){
                 Bertha.launch();
             }
 
             if(gamepad1.y){
-                Bertha.climb(-8000);
+                Bertha.climb(-7500);
             }
             else if(gamepad1.x){
-                Bertha.climb(-3500);
+                Bertha.climb(-3250);
             }
 
             

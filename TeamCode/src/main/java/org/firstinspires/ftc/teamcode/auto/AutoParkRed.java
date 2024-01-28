@@ -7,9 +7,10 @@ import static org.firstinspires.ftc.teamcode.berthaHardware.liftPosition;
 import org.firstinspires.ftc.teamcode.berthaHardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Disabled
 @Autonomous(name = "Auto League 2")
 public class AutoParkRed extends LinearOpMode {
 

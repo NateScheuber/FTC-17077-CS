@@ -16,8 +16,8 @@ public class Location_Pipeline_Blue extends OpenCvPipeline {
     static final Point topLeft1 = new Point (10,30);
     static final Point bottomRight1 = new Point (40, 60);
 
-    static final Point topLeft2 = new Point(165, 95);
-    static final Point bottomRight2 = new Point(195, 120);
+    static final Point topLeft2 = new Point(155, 95);
+    static final Point bottomRight2 = new Point(185, 120);
     Mat mat = new Mat();
     Mat region1 = new Mat();
     Mat region2 = new Mat();

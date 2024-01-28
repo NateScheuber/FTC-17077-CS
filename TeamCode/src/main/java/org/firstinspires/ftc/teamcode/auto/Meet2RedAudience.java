@@ -28,7 +28,7 @@ import static org.firstinspires.ftc.teamcode.berthaHardware.flipOut;
 import static org.firstinspires.ftc.teamcode.berthaHardware.rotate0;
 import static org.firstinspires.ftc.teamcode.berthaHardware.rotateCCW90;
 import static org.firstinspires.ftc.teamcode.berthaHardware.rotateCW90;
-
+@Disabled
 @Config
 @Autonomous(name = "Red w/vision")
 public class Meet2RedAudience extends LinearOpMode {

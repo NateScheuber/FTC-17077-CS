@@ -32,8 +32,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Config
-@Autonomous(name = "Red Audience AutoCycle", group = "AutoCycle")
-public class v2RedAudienceAutocycle extends LinearOpMode {
+@Autonomous(name = "Red Audience No Autocycle", group = "AutoCycle")
+public class v2RedAudienceNoAutocycle extends LinearOpMode {
 
     berthaHardware Bertha = new berthaHardware(this);
 
@@ -92,8 +92,8 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     intakeSA.setPower(0);
                     intakeSB.setPower(0);
-                    intakeLinkA.setPosition(0.485);
-                    intakeLinkB.setPosition(0.485);
+                    intakeLinkA.setPosition(0.48);
+                    intakeLinkB.setPosition(0.48);
                     intakeMA.setPower(1);
                 })
                 .splineTo(new Vector2d(-61, -36), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -108,8 +108,8 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     intakeSA.setPower(0);
                     intakeSB.setPower(0);
-                    intakeLinkA.setPosition(0.485);
-                    intakeLinkB.setPosition(0.485);
+                    intakeLinkA.setPosition(0.48);
+                    intakeLinkB.setPosition(0.48);
                     intakeMA.setPower(1);
                 })
                 .splineTo(new Vector2d(-61, -36), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -124,8 +124,8 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     intakeSA.setPower(0);
                     intakeSB.setPower(0);
-                    intakeLinkA.setPosition(0.485);
-                    intakeLinkB.setPosition(0.485);
+                    intakeLinkA.setPosition(0.48);
+                    intakeLinkB.setPosition(0.48);
                     intakeMA.setPower(1);
                 })
                 .splineTo(new Vector2d(-62, -36), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -135,8 +135,8 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                 .addTemporalMarker(0.3,() -> {
                     intakeSA.setPower(-0.5);
                     intakeSB.setPower(-0.5);
-                    intakeLinkA.setPosition(0.655);
-                    intakeLinkB.setPosition(0.655);
+                    intakeLinkA.setPosition(0.65);
+                    intakeLinkB.setPosition(0.65);
                     intakeMA.setPower(-0.5);
                     Bertha.closeClaw(true);
                 })
@@ -152,43 +152,17 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(26, -40), Math.toRadians(270),SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        Trajectory autoIntake3 = drive.trajectoryBuilder(new Pose2d(scorePose.getX(), scorePose.getY()-8, scorePose.getHeading()))
-                .addTemporalMarker(0.3,()->{
-                    clawFlip.setPosition(flipIn);
-                    clawRotate.setPower(rotate0);
-                })
-                .addTemporalMarker(0.5, () -> {
-                    liftMaster.setPower(-0.5);
-                    liftSlave.setPower(-0.5);
-                })
-                .addTemporalMarker(0.75, () -> {
-                    liftMaster.setPower(0);
-                    liftSlave.setPower(0);
-                })
-                .splineToConstantHeading(new Vector2d(53, -32), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineTo(new Vector2d(24, -14), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-47, -14), Math.toRadians(180))
-                .addDisplacementMarker(() -> {
-                    intakeSA.setPower(1);
-                    intakeSB.setPower(1);
-                    intakeLinkA.setPosition(0.44);
-                    intakeLinkB.setPosition(0.44);
-                    intakeMA.setPower(1);
-                })
-                .splineToConstantHeading(new Vector2d(-56,-14), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
         //same same
         Trajectory initialSetup = drive.trajectoryBuilder(initialIntake1.end(), 90)
-                .addTemporalMarker(0.4,() -> {
+                .addTemporalMarker(0.3,() -> {
                     intakeSA.setPower(-0.5);
                     intakeSB.setPower(-0.5);
-                    intakeLinkA.setPosition(0.655);
-                    intakeLinkB.setPosition(0.655);
+                    intakeLinkA.setPosition(0.65);
+                    intakeLinkB.setPosition(0.65);
                     intakeMA.setPower(-0.5);
                     Bertha.closeClaw(true);
                 })
-                .addTemporalMarker(1.5,() -> {
+                .addTemporalMarker(1,() -> {
                     intakeSA.setPower(0);
                     intakeSB.setPower(0);
                     intakeMA.setPower(0);
@@ -198,51 +172,6 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(0,-14), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(24,-14), Math.toRadians(0), SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineToConstantHeading(new Vector2d(26, -32), Math.toRadians(270),SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        Trajectory autoIntake = drive.trajectoryBuilder(scorePose)
-                .addTemporalMarker(0.3,()->{
-                    clawFlip.setPosition(flipIn);
-                    clawRotate.setPower(rotate0);
-                })
-                .addTemporalMarker(0.5, () -> {
-                    liftMaster.setPower(-0.5);
-                    liftSlave.setPower(-0.5);
-                })
-                .addTemporalMarker(0.75, () -> {
-                    liftMaster.setPower(0);
-                    liftSlave.setPower(0);
-                })
-                .splineToConstantHeading(new Vector2d(53, -32), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineTo(new Vector2d(24, -14), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-47, -14), Math.toRadians(180))
-                .addDisplacementMarker(() -> {
-                    intakeSA.setPower(1);
-                    intakeSB.setPower(1);
-                    intakeLinkA.setPosition(0.43);
-                    intakeLinkB.setPosition(0.43);
-                    intakeMA.setPower(1);
-                })
-                .splineToConstantHeading(new Vector2d(-54,-14), Math.toRadians(180), SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        Trajectory autoScore = drive.trajectoryBuilder(autoIntake.end(), true)
-                .addTemporalMarker(0.4,() -> {
-                    intakeSA.setPower(-0.5);
-                    intakeSB.setPower(-0.5);
-                    intakeLinkA.setPosition(0.65);
-                    intakeLinkB.setPosition(0.65);
-                    intakeMA.setPower(-0.5);
-                    Bertha.closeClaw(true);
-                })
-                .addTemporalMarker(1.5,() -> {
-                    intakeSA.setPower(0);
-                    intakeSB.setPower(0);
-                    intakeMA.setPower(0);
-                })
-                .splineToConstantHeading(new Vector2d(15,-14), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(36,-14), Math.toRadians(0), SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineToConstantHeading(new Vector2d(40, -32), Math.toRadians(270),SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         Trajectory park = drive.trajectoryBuilder(scorePose)
@@ -291,7 +220,7 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
         waitForStart();
 
         if(position == 1) {
-            sleep(4000);
+            sleep(18000);
             drive.followTrajectory(placePurple1);
             drive.followTrajectory(initialIntake1);
             drive.followTrajectory(initialSetup);
@@ -314,33 +243,11 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                     })
                     .build();
             drive.followTrajectory(initialScore1);
-            drive.setPoseEstimate(new Pose2d(scoreX, scoreY, Math.toRadians(180)));
-            drive.followTrajectory(autoIntake);
-            drive.followTrajectory(autoScore);
-            distanceX = distance.getDistance(DistanceUnit.INCH);
-            Trajectory initialScore2 = drive.trajectoryBuilder(autoScore.end())
-                    .addTemporalMarker(0.0, () -> {
-                        liftMaster.setPower(1);
-                        liftSlave.setPower(1);
-                    })
-                    .addTemporalMarker(0.3, () -> {
-                        liftMaster.setPower(0);
-                        liftSlave.setPower(0);
-                        intakeMA.setPower(0);
-                        clawFlip.setPosition(flipOut);
-                        clawRotate.setPower(rotateCCW90);
-                    })
-                    .back(distanceX+2.7, SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .addDisplacementMarker(()->{
-                        Bertha.closeClaw(false);
-                    })
-                    .build();
-            drive.followTrajectory(initialScore2);
-            drive.setPoseEstimate(new Pose2d(scoreX, scoreY, Math.toRadians(180)));
+            drive.setPoseEstimate(scorePose);
             drive.followTrajectory(park);
         }
         else if(position == 2) {
-            sleep(3000);
+            sleep(18000);
             drive.followTrajectory(placePurple2);
             drive.followTrajectory(initialIntake2);
             drive.setPoseEstimate(initialIntake1.end());
@@ -364,33 +271,11 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                     })
                     .build();
             drive.followTrajectory(initialScore1);
-            drive.setPoseEstimate(new Pose2d(scoreX, scoreY, Math.toRadians(180)));
-            drive.followTrajectory(autoIntake);
-            drive.followTrajectory(autoScore);
-            distanceX = distance.getDistance(DistanceUnit.INCH);
-            Trajectory initialScore2 = drive.trajectoryBuilder(autoScore.end())
-                    .addTemporalMarker(0.0, () -> {
-                        liftMaster.setPower(1);
-                        liftSlave.setPower(1);
-                    })
-                    .addTemporalMarker(0.3, () -> {
-                        liftMaster.setPower(0);
-                        liftSlave.setPower(0);
-                        intakeMA.setPower(0);
-                        clawFlip.setPosition(flipOut);
-                        clawRotate.setPower(rotateCCW90);
-                    })
-                    .back(distanceX+2.7, SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .addDisplacementMarker(()->{
-                        Bertha.closeClaw(false);
-                    })
-                    .build();
-            drive.followTrajectory(initialScore2);
-            drive.setPoseEstimate(new Pose2d(scoreX, scoreY, Math.toRadians(180)));
+            drive.setPoseEstimate(scorePose);
             drive.followTrajectory(park);
         }
         else{
-            sleep(2500);
+            sleep(18000);
             drive.followTrajectory(placePurple3);
             drive.followTrajectory(initialIntake3);
             drive.followTrajectory(initialSetup3);
@@ -413,29 +298,7 @@ public class v2RedAudienceAutocycle extends LinearOpMode {
                     })
                     .build();
             drive.followTrajectory(initialScore1);
-            drive.setPoseEstimate(new Pose2d(scoreX, scoreY-8, Math.toRadians(180)));
-            drive.followTrajectory(autoIntake3);
-            drive.followTrajectory(autoScore);
-            distanceX = distance.getDistance(DistanceUnit.INCH);
-            Trajectory initialScore2 = drive.trajectoryBuilder(autoScore.end())
-                    .addTemporalMarker(0.0, () -> {
-                        liftMaster.setPower(1);
-                        liftSlave.setPower(1);
-                    })
-                    .addTemporalMarker(0.3, () -> {
-                        liftMaster.setPower(0);
-                        liftSlave.setPower(0);
-                        intakeMA.setPower(0);
-                        clawFlip.setPosition(flipOut);
-                        clawRotate.setPower(rotateCCW90);
-                    })
-                    .back(distanceX+2.7, SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .addDisplacementMarker(()->{
-                        Bertha.closeClaw(false);
-                    })
-                    .build();
-            drive.followTrajectory(initialScore2);
-            drive.setPoseEstimate(new Pose2d(scoreX, scoreY, Math.toRadians(180)));
+            drive.setPoseEstimate(scorePose);
             drive.followTrajectory(park);
         }
     }
